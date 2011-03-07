@@ -2,11 +2,11 @@
 
 A tiny pure Ruby library to serialize JSON.
 
-  require 'crock'
-  JSON.generate([
-    12, 'Café',
-    {'on' => true}
-  ]) # => '[12,"Café",{"on":true}]'
+    require 'crock'
+    JSON.generate([
+      12, 'Café',
+      {'on' => true}
+    ]) # => '[12,"Café",{"on":true}]'
 
 ## Why!?
 
