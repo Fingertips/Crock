@@ -1,4 +1,15 @@
 module JSON
+  REPLACEMENTS = {
+    '\\' => '\\\\',
+    '"'  => '\\"',
+    '/'  => '\/',
+    "\b" => '\\b',
+    "\f" => '\\f',
+    "\n" => '\\n',
+    "\r" => '\\r',
+    "\t" => '\\t'
+  }
+  
   def self.generate(object)
     serialize(object)
   end
@@ -6,9 +17,11 @@ module JSON
   def self.serialize(object)
     case object
     when Hash
-      self.serialize_hash(object)
+      self._serialize_hash(object)
+    when Array
+      self._serialize_array(object)
     when String
-      "\"#{object}\""
+      self._serialize_string(object)
     when FalseClass
       'false'
     when TrueClass
@@ -20,11 +33,30 @@ module JSON
     end
   end
   
-  def self.serialize_hash(object)
+  def self._serialize_string(object)
+    escaped = object.gsub(/[\\\"\/\b\f\n\r\t]/) do |match|
+      REPLACEMENTS[match]
+    end
+    "\"#{escaped}\""
+  end
+  
+  def self._serialize_hash(object)
     out = '{'
+    first = true
     for name, value in object
+      first ? first = false : out << ','
       out << JSON.serialize(name) << ':' << JSON.serialize(value)
     end
     out << '}'
+  end
+  
+  def self._serialize_array(object)
+    out = '['
+    first = true
+    for value in object
+      first ? first = false : out << ','
+      out << JSON.serialize(value)
+    end    
+    out << ']'
   end
 end

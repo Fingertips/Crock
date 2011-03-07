@@ -12,6 +12,14 @@ class CrockTest < Test::Unit::TestCase
   
   def test_string_serialization
     assert_equal '"monkey"', JSON.generate('monkey')
+    assert_equal '"\\\\"', JSON.generate("\\")
+    assert_equal '"\""', JSON.generate('"')
+    assert_equal '"\/"', JSON.generate('/')
+    assert_equal '"\\b"', JSON.generate("\b")
+    assert_equal '"\\f"', JSON.generate("\f")
+    assert_equal '"\\n"', JSON.generate("\n")
+    assert_equal '"\\r"', JSON.generate("\r")
+    assert_equal '"\\t"', JSON.generate("\t")
   end
   
   def test_special_serialization
@@ -21,6 +29,18 @@ class CrockTest < Test::Unit::TestCase
   end
   
   def test_hash_serialization
+    assert_equal '{}', JSON.generate({})
     assert_equal '{"spread":"Peanut Butter"}', JSON.generate({'spread' => 'Peanut Butter'})
+    assert_equal '{"bread":"white","spread":"Peanut Butter"}', JSON.generate({'bread' => 'white', 'spread' => 'Peanut Butter'})
+  end
+  
+  def test_array_serialization
+    assert_equal '[]', JSON.generate([])
+    assert_equal '[1]', JSON.generate([1])
+    assert_equal '[1,2,"blue",{}]', JSON.generate([1,2,'blue',{}])
+  end
+  
+  def test_documentation_example
+    assert_equal '[12,"Café",{"on":true}]', JSON.generate([12, 'Café', {'on' => true}])
   end
 end
