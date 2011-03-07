@@ -1,12 +1,17 @@
 # Crock
 
-A really tiny piece of code to serialize Ruby hashes to JSON.
+A tiny pure Ruby library to serialize JSON.
 
   require 'crock'
   JSON.generate([
     12, 'Café',
     {'on' => true}
-  ]) # => ""
+  ]) # => '[12,"Café",{"on":true}]'
+
+## Why!?
+
+1. It's just one file and easy to drop in your project when you don't want gems
+2. It has a liberal license
 
 ## Limitations
 
