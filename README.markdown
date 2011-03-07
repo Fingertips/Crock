@@ -1,4 +1,4 @@
-= Crock
+# Crock
 
 A really tiny piece of code to serialize Ruby hashes to JSON.
 
