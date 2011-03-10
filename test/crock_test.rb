@@ -44,3 +44,26 @@ class CrockTest < Test::Unit::TestCase
     assert_equal '[12,"Café",{"on":true}]', JSON.generate([12, 'Café', {'on' => true}])
   end
 end
+
+class Person
+  attr_accessor :name
+  
+  def to_json
+    JSON.serialize(name)
+  end
+end
+
+class CustomClassCrockTest < Test::Unit::TestCase
+  def setup
+    @person = Person.new
+    @person.name = 'Olivia Wilde'
+  end
+  
+  def test_custom_class_serialization
+    assert_equal JSON.generate(@person.name), JSON.generate(@person)
+  end
+  
+  def test_custom_class_serialization_within_other_object
+    assert_equal '{"person":"Olivia Wilde"}', JSON.generate({'person' => @person})
+  end
+end
