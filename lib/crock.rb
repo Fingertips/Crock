@@ -1,4 +1,7 @@
-module JSON
+# Ruby implementation of JSON serialization.
+#
+#   JSON.serialize([{'title' => 'Tron'}, 12]) # => "[{"title":"Tron"},12]"
+class JSON
   REPLACEMENTS = {
     '\\' => '\\\\',
     '"'  => '\\"',
@@ -10,18 +13,27 @@ module JSON
     "\t" => '\\t'
   }
   
-  def self.generate(object)
-    serialize(object)
-  end
-  
+  # Serializes a Ruby object to a valid JSON expression.
+  #
+  #   JSON.serialize({'title' => 'Tron'}) # => '{"title":"Tron"}'
+  #
+  # You can serialize unsupported classes by defining the +to_json+ method
+  # on them.
+  #
+  #   class Person
+  #     attr_accessor :name
+  #     def to_json
+  #       JSON.serialize(name)
+  #     end
+  #   end
   def self.serialize(object)
     case object
     when Hash
-      self._serialize_hash(object)
+      self.serialize_hash(object)
     when Array
-      self._serialize_array(object)
+      self.serialize_array(object)
     when String
-      self._serialize_string(object)
+      self.serialize_string(object)
     when FalseClass
       'false'
     when TrueClass
@@ -33,14 +45,20 @@ module JSON
     end
   end
   
-  def self._serialize_string(object)
+  class << self
+    alias generate serialize
+  end
+  
+  private
+  
+  def self.serialize_string(object) #:nodoc:
     escaped = object.gsub(/[\\\"\/\b\f\n\r\t]/) do |match|
       REPLACEMENTS[match]
     end
     "\"#{escaped}\""
   end
   
-  def self._serialize_hash(object)
+  def self.serialize_hash(object) #:nodoc:
     out = '{'
     first = true
     for name, value in object
@@ -50,7 +68,7 @@ module JSON
     out << '}'
   end
   
-  def self._serialize_array(object)
+  def self.serialize_array(object) #:nodoc:
     out = '['
     first = true
     for value in object
